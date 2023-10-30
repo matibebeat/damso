@@ -27,7 +27,7 @@ export default {
       user: {
         name: "John Doe",
         id: 1,
-        admin: true,
+        admin: false,
       },
       /*define an array of articles*/
       cart : [],

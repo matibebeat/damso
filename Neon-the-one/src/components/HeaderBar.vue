@@ -9,8 +9,7 @@
 
     <nav>
       <RouterLink to="/">Home</RouterLink>
-
-      <RouterLink to="/contact" v-if="!this.user.admin">Contact</RouterLink>
+      <RouterLink to="/shop" v-if="!this.user.admin">Shop</RouterLink>
       <RouterLink to="/about" v-if="!this.user.admin">About</RouterLink>
       <RouterLink to="/admin" v-if="this.user.admin">Shop</RouterLink>
       <RouterLink to="/admin/create" v-if="this.user.admin">new product</RouterLink>
