@@ -9,9 +9,11 @@
 
     <nav>
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/shop">Shop</RouterLink>
-      <RouterLink to="/contact">Contact</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+
+      <RouterLink to="/contact" v-if="!this.user.admin">Contact</RouterLink>
+      <RouterLink to="/about" v-if="!this.user.admin">About</RouterLink>
+      <RouterLink to="/admin" v-if="this.user.admin">Shop</RouterLink>
+      <RouterLink to="/admin/create" v-if="this.user.admin">new product</RouterLink>
     </nav>
 
     <div class="wrapper_panier" @click="ShowPanier = !ShowPanier; updatePanier()">
@@ -45,6 +47,10 @@ export default {
   props: {
     cart: {
       type: Array,
+      required: true,
+    },
+    user: {
+      type: Object,
       required: true,
     },
   },

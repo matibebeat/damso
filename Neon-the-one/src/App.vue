@@ -6,7 +6,7 @@ import HeaderBar from "./components/HeaderBar.vue";
 </script>
 
 <template>
-  <HeaderBar class="bar" :cart="this.cart"/>
+  <HeaderBar :user="user" class="bar" :cart="this.cart"/>
 
   <RouterView @AddToCart="purchase" :user="user"/>
 </template>

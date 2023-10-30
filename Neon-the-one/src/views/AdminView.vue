@@ -2,30 +2,7 @@
   <div class="admin">
     <h1>This is an admin page</h1>
     <div class="admingrid">
-      <div
-        class="article"
-        v-for="(article) in articles"
-        :key="article.index"
-        :style="{
-          boxShadow:
-            '0 0 7px ' +
-            article.color +
-            ', 0 0 10px ' +
-            article.color +
-            ', 0 0 20px ' +
-            article.color,
-        }"
-      >
-        <img :src="article.img" alt="" class="panier" />
-        <div class="infos">
-          <div class="tittle">
-            <h3>{{ article.name }}</h3>
-            <p :style="{ color: article.color }">{{ article.price }}€</p>
-          </div>
-          <p>{{ article.description }}</p>
-
-        </div>
-      </div>
+      <AdminArticle v-for="(article) in articles"  :key="article._id" :article="article"  @update-article="this.getArticles();"/>
     </div>
   </div>
 
@@ -33,8 +10,17 @@
 
 <script>
 import axios from "axios";
+import AdminArticle from "@/views/AdminArticle.vue";
+
 export default {
   name: "AdminView",
+  components: {AdminArticle},
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       /*define an array of articles*/
@@ -42,6 +28,9 @@ export default {
     };
   },
   mounted() {
+    if (this.user.admin == false) {
+      this.$router.push("/");
+    }
     this.getArticles();
   },
   methods: {
@@ -55,6 +44,20 @@ export default {
           console.log(error);
         });
     },
+    supr(id) {
+      axios
+          .delete("http://localhost:4000/api/prods/" + id)
+          .then((response) => {
+            console.log(response);
+            alert("Article deleted");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      /*update the articles array*/
+      this.getArticles();
+    },
+
   },
 }
 </script>
@@ -80,26 +83,7 @@ img {
   margin-bottom: 0px;
   padding-bottom: 0px;
 }
-.article {
-  background-color: rgba(0, 0, 0, 0.35);
-  margin: 5%;
-  border-radius: 20px;
-  box-shadow:
-    /* White glow */ 0 0 7px #ff6088, 0 0 10px #ff6088,
-  0 0 20px #ff6088;
-  height: 100%;
-}
-.article:hover {
-  transform: scale(1.005);
-  transition: all 0.1s ease-in-out;
-}
-.infos {
-  margin-top: -5px;
 
-  height: 40%;
-  border-radius: 0 0 20px 20px;
-  padding: 15px;
-}
 h3 {
   margin-top: 0px;
   color: white;
@@ -108,14 +92,7 @@ h3 {
 
   letter-spacing: 2px;
 }
-.tittle {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  /*align the items in the center
-  */
-  align-items: center;
-}
+
 .tittle p {
   margin-top: 0px;
 
@@ -129,6 +106,25 @@ a {
   text-decoration: none;
 }
 
+button {
+  float: right;
+  background: none;
+  border-radius: 10px;
+  font-size: 30px;
+  padding: 5px 15px;
+  border: 2px solid #ff6088;
+  box-shadow:
+    /* White glow */ 0 0 2px #ff6088, 0 0 20px #ff6088;
+  margin-bottom: 20px;
+  color: white;
+}
+button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
 
+P{
+
+}
 
 </style>

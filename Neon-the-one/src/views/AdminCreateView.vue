@@ -1,88 +1,83 @@
+/* write a vue component with a form to create a new product
+the form should not update the page
+*/
+// Path: Neon-the-one/src/views/AdminCreateView.vue
+
+<script setup>
+import axios from "axios";
+</script>
+
 <template>
-  <form @add="addProduct "  action="#">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="name"
-        v-model="article.name"
-      />
-    </div>
-    <div class="form-group">
-      <label for="price">Price</label>
-      <input
-        type="text"
-        class="form-control"
-        id="price"
-        v-model="article.price"
-      />
-    </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <input
-        type="text"
-        class="form-control"
-        id="description"
-        v-model="article.description"
-      />
-    </div>
-    <div class="form-group">
-      <label for="color">Color</label>
-      <input
-        type="color"
-        class="form-control"
-        id="color"
-        v-model="article.color"
-      />
-    </div>
-    <div class="form-group">
-      <label for="img">Image</label>
-      <input
-        type="text"
-        class="form-control"
-        id="img"
-        v-model="article.img"
-      />
-    </div>
-    <button type="add"  class="btn btn-primary">Submit</button>
+  <form @submit.prevent="createArticle">
+    <label for="name">Name</label>
+    <input type="text" id="name" v-model="name" />
+    <label for="description">Description</label>
+    <input type="text" id="description" v-model="description" />
+    <label for="price">Price</label>
+    <input type="number" id="price" v-model="price" />
+    <label for="color">Color</label>
+    <input type="color" id="color" v-model="color" />
+    <label for="img">Image</label>
+    <input type="text" id="img" v-model="image" />
+    <button type="submit">Create</button>
   </form>
 </template>
 
 <script>
 export default {
   name: "AdminCreateView",
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    if (this.user.admin == false) {
+      this.$router.push("/");
+    }
+  }
+  ,
   data() {
     return {
-      /*define an array of articles*/
-      article : {
-        name: "",
-        price: "",
-        description: "",
-        color: "",
-        img: "",
-      },
+      name: "",
+      description: "",
+      price: 0,
+      color: "",
+      image: "",
     };
   },
   methods: {
-    addProduct() {
+    createArticle() {
+      if (this.color== "") {
+        this.color = "#000000";
+      }
       axios
-        .post("http://localhost:4000/api/prods", this.article)
+        .post("http://localhost:4000/api/prods", {
+          name: this.name,
+          description: this.description,
+          price: this.price,
+          color: this.color,
+          image: this.image,
+        })
         .then((response) => {
-          console.log(response.data);
+          console.log(response);
+          alert("Article created");
         })
         .catch((error) => {
           console.log(error);
         });
     },
   },
-}
+};
 </script>
 
+
+
 <style scoped>
-.form-group {
-  margin-bottom: 20px;
-}
+ .form-group {
+   margin-bottom: 20px;
+ }
 
 label {
   display: block;
