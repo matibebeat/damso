@@ -1,7 +1,7 @@
 <template>
-  <div class="shop">
-    <h1>This is a shop page</h1>
-    <div class="shopgrid">
+  <div class="admin">
+    <h1>This is an admin page</h1>
+    <div class="admingrid">
       <div
         class="article"
         v-for="(article) in articles"
@@ -23,63 +23,51 @@
             <p :style="{ color: article.color }">{{ article.price }}€</p>
           </div>
           <p>{{ article.description }}</p>
-          <button
-            @click="$emit('add-to-cart', article._id, 1 )"
-            :style="{
-              boxShadow:
-                '0 0 7px ' +
-                article.color +
-                ', 0 0 10px ' +
-                article.color +
-                ', 0 0 20px ' +
-                article.color,
-                borderColor: article.color,
-                Hover: {
-                  color: article.color,
-                },
-            }"
-          >
-            Add to cart
-          </button>
+
         </div>
       </div>
     </div>
   </div>
+
 </template>
 
-<script >
+<script>
 import axios from "axios";
-
-
 export default {
-  name: "ShopView",
+  name: "AdminView",
   data() {
     return {
       /*define an array of articles*/
       articles: [],
     };
   },
-  mounted(){
-    axios.get('http://localhost:4000/api/prods')
-    .then(response => {
-        this.articles = response.data
-      console.log(response.data)
-    })
-    .catch(error => {
-      console.log(error)
-    })
-  }
-};
+  mounted() {
+    this.getArticles();
+  },
+  methods: {
+    getArticles() {
+      axios
+        .get("http://localhost:4000/api/prods")
+        .then((response) => {
+          this.articles = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+}
 </script>
 
 <style scoped>
+
 h1 {
   color: white;
 }
-.shop {
+.admin {
   padding: 0% 5%;
 }
-.shopgrid {
+.admingrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 25px;
@@ -96,9 +84,9 @@ img {
   background-color: rgba(0, 0, 0, 0.35);
   margin: 5%;
   border-radius: 20px;
-  box-shadow: 
+  box-shadow:
     /* White glow */ 0 0 7px #ff6088, 0 0 10px #ff6088,
-    0 0 20px #ff6088;
+  0 0 20px #ff6088;
   height: 100%;
 }
 .article:hover {
@@ -140,20 +128,7 @@ p {
 a {
   text-decoration: none;
 }
-button {
-  float: right;
-  background: none;
-  border-radius: 10px;
-  font-size: 30px;
-  padding: 5px 15px;
-  border: 2px solid #ff6088;
-  box-shadow: 
-    /* White glow */ 0 0 2px #ff6088, 0 0 20px #ff6088;
-  margin-bottom: 20px;
-  color: white;
-}
-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-}
+
+
+
 </style>

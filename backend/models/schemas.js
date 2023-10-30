@@ -22,12 +22,18 @@ const productSchema = new mongoose.Schema({
     image : { type: String, required: true },
     color: { type: String, required: true },
 });
+const panierSchema = new mongoose.Schema({
+    user: { type: String, required: true },
+    product: { type: String, required: true },
+    qty: { type: Number, required: true },
+});
 
 const customers = mongoose.model('customers', custSchema);
 const purchases = mongoose.model('purchases', purchSchema);
 const products = mongoose.model('products', productSchema);
+const panier = mongoose.model('panier', panierSchema);
 
-const mySchemas = { 'customers': customers, 'purchases': purchases, 'products': products};
+const mySchemas = { 'customers': customers, 'purchases': purchases, 'products': products, 'panier': panier };
 
 module.exports = mySchemas
 

@@ -21,6 +21,24 @@ router.use((req, res, next) => {
 router.get('/',  (req, res) => {
     res.end('This is my root API http response');
 });
+router.get('/prods/:id', async (req, res) => {
+        console.log("in prods");
+        try {
+            const product = Schemas.products;
+            const ProdData = await product.find({ _id: req.params.id }).exec();
+            if (ProdData) {
+                res.status(200).send(ProdData);
+            } else {
+                res.status(404).json({ message: "No data found" });
+            }
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+
+
+    }
+
+);
 
 router.get('/prods', async (req, res) => {
     console.log("in prods");
@@ -39,6 +57,26 @@ router.get('/prods', async (req, res) => {
 }
 
 );
+
+router.post('/prods', async (req, res) => {
+    console.log("in prods");
+    try {
+        const product = Schemas.products;
+        const ProdData = await product.create(req.body);
+        if (ProdData) {
+            res.status(200).json(ProdData);
+        } else {
+            res.status(404).json({ message: "No data found" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+
+}
+
+);
+
+
 router.get('/cust', (req, res) => {
     const responseObject = {
         message: 'This is a JSON response',
