@@ -7,32 +7,56 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: HomeView,
+        meta : { requiresAuth : false }
     },
     {
       path: '/shop',
       name: 'shop',
-      component: () => import('../views/ShopView.vue')
+      component: () => import('../views/ShopView.vue'),
+        meta : { requiresAuth : false }
     },
     {
-      path: '/admin',
-        name: 'admin',
-        component: () => import('../views/AdminView.vue')
+      path: '/login',
+        name: 'login',
+        component: () => import('../views/LoginView.vue'),
+        meta : { requiresAuth : false }
     },
     {
-      path: '/admin/create',
-        name: 'create',
-        component: () => import('../views/AdminCreateView.vue')
-    }
+      path: '/register',
+        name: 'register',
+        component: () => import('../views/RegisterView.vue'),
+        meta : { requiresAuth : false }
+    },
+    {
+      path: '/orders',
+        name: 'orders',
+        component: () => import('../views/OrderView.vue'),
+      meta : { requiresAuth : true }
+    },
+      {
+        path: '/about',
+            name: 'about',
+            component: () => import('../views/AboutView.vue'),
+      }
   ]
 })
+
+
+
+
+router.beforeEach((to, from, next) => {
+    if(to.meta.requiresAuth){
+        if(localStorage.getItem('token')){
+        next();
+        }else{
+        next({name: 'login'});
+        }
+    }else{
+        next();
+    }
+}
+);
+
 
 export default router

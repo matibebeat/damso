@@ -63,7 +63,6 @@ export default {
     axios.get('http://localhost:4000/api/prods')
     .then(response => {
         this.articles = response.data
-      console.log(response.data)
     })
     .catch(error => {
       console.log(error)
@@ -78,10 +77,11 @@ h1 {
 }
 .shop {
   padding: 0% 5%;
+
 }
 .shopgrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 25px;
 }
 img {
@@ -103,6 +103,7 @@ img {
 }
 .article:hover {
   transform: scale(1.005);
+  z-index: 0;
   transition: all 0.1s ease-in-out;
 }
 .infos {
@@ -140,7 +141,7 @@ p {
 a {
   text-decoration: none;
 }
-button {
+.infos button {
   float: right;
   background: none;
   border-radius: 10px;
@@ -151,6 +152,8 @@ button {
     /* White glow */ 0 0 2px #ff6088, 0 0 20px #ff6088;
   margin-bottom: 20px;
   color: white;
+
+
 }
 button:hover {
   background-color: rgba(255, 255, 255, 0.2);

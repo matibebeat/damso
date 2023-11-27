@@ -4,11 +4,9 @@ const mongoose = require('mongoose');
 
 const custSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    age: { type: Number, required: true },
-    email: { type: String, required: true },
-    city: { type: String, required: true },
-    status: { type: String, required: true }
-    // created_at: { type: Date, default: Date.now } 
+
+    password: { type: String, required: true },
+    email: { type: String, required: true }
 });
 const purchSchema = new mongoose.Schema({
     product: { type: String, required: true },
@@ -24,16 +22,20 @@ const productSchema = new mongoose.Schema({
 });
 const panierSchema = new mongoose.Schema({
     user: { type: String, required: true },
-    product: { type: String, required: true },
-    qty: { type: Number, required: true },
+    product: { type: Object , required: true },
+});
+const orderSchema = new mongoose.Schema({
+    user: {type: String, required: true},
+    product: {type: Object, required: true},
 });
 
 const customers = mongoose.model('customers', custSchema);
 const purchases = mongoose.model('purchases', purchSchema);
 const products = mongoose.model('products', productSchema);
 const panier = mongoose.model('panier', panierSchema);
+const orders = mongoose.model('orders', orderSchema);
 
-const mySchemas = { 'customers': customers, 'purchases': purchases, 'products': products, 'panier': panier };
+const mySchemas = { 'customers': customers, 'purchases': purchases, 'products': products, 'panier': panier , 'orders': orders};
 
 module.exports = mySchemas
 

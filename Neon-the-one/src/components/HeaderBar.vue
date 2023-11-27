@@ -8,6 +8,9 @@
     </div>
 
     <nav>
+      <button v-if="connected" @click="logout">Logout</button>
+      <RouterLink to="/login" v-if="!connected">Login</RouterLink>
+      <RouterLink to="/register" v-if="!connected">Register</RouterLink>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/shop" v-if="!this.user.admin">Shop</RouterLink>
       <RouterLink to="/about" v-if="!this.user.admin">About</RouterLink>
@@ -15,7 +18,10 @@
       <RouterLink to="/admin/create" v-if="this.user.admin">new product</RouterLink>
     </nav>
 
-    <div class="wrapper_panier" @click="ShowPanier = !ShowPanier; updatePanier()">
+
+    <button @click="buy">Buy</button>
+
+    <div class="wrapper_panier" @click="ShowPanier = !ShowPanier;">
       <img src="../assets/panier.png" alt="" class="panier" />
       <p>{{cart.length}} item</p>
     </div>
@@ -24,11 +30,16 @@
     <div v-if="ShowPanier" class="panierPanel" >
       <div v-for="(item, index) in cart" :key="index" class="panierRow">
         <div>
-          <p>{{item.name}}</p>
-          <p>{{item.price}}€</p>
+          <p>{{item.product.name}}</p>
+          <p>{{item.product.price}}€</p>
+        </div>
+        <div class="number">
+          <button @click="$emit('add-to-cart', [item.product._id, -1])" class="button2">-</button>
+          <p class="qty">{{item.qty}}</p>
+          <button @click="$emit('add-to-cart', [item.product._id, 1])" class="button2">+</button>
         </div>
 
-        <p class="qty">{{item.qty}}</p>
+
       </div>
     </div>
   </div>
@@ -41,6 +52,8 @@ export default {
   data() {
     return {
       ShowPanier: false,
+      panier: [],
+      connected: false,
     };
   },
   props: {
@@ -53,26 +66,48 @@ export default {
       required: true,
     },
   },
-  updated() {
-    this.updatePanier();
+  mounted() {
+    if(localStorage.getItem('token')){
+      this.connected = true;
+    }
   },
   methods: {
-  updatePanier() {
+    logout() {
+      localStorage.removeItem('token')
+      this.connected = false;
+      this.$router.push({name: 'login'})
 
-    for (let i = 0; i < this.cart.length; i++) {
-      axios.get('http://localhost:4000/api/prods/'+this.cart[i].article)
-      .then(response => {
-        console.log(response.data)
-          this.cart[i].name = response.data[0].name;
-          this.cart[i].price = response.data[0].price;
+    },
+    buy() {
+      var bool = confirm("Are you sure you want to buy your cart?")
+      if(!bool){
+        return
+      }
 
+
+      axios.get("http://localhost:4000/api/panier/" + this.user.id)
+.then(response => {
+        this.panier = JSON.parse(response.data)
+        if (this.panier == null) {
+          alert("Your cart is empty")
+          return
+        }
+
+       axios.post('http://localhost:4000/api/orders/', {product : this.panier, user : this.user.id})
+        .then(response => {
+          console.log(response.data)
+          axios.get('http://localhost:4000/api/emptyPanier/' + this.user.id)
+
+          this.$router.push({name: 'orders'})
+          this.$emit('buy')
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(error => {
+        console.log(error)
       })
-    }
-
-
+    },
   },
-  },
-
 };
 </script>
 
@@ -120,6 +155,7 @@ header {
   padding-left: 20px;
   width: 8%;
   background-color: #9d9d9d;
+  z-index: 1;
 }
 .wrapper_panier:hover {
   background-color: #ff6088;
@@ -160,7 +196,7 @@ a:hover {
   right: 0;
   margin-right: 20px;
   margin-top: 10px;
-
+  z-index: 1;
   background-color: antiquewhite;
   overflow-y: scroll;
 
@@ -178,5 +214,40 @@ a:hover {
 }
 .panierRow .qty{
   float: right;
+}
+
+button{
+  background-color: #ff6088;
+  border: none;
+
+  font-size: 30px;
+  padding: 5px 75px;
+
+
+  color: white;
+}
+button:hover{
+  background-color: #9d9d9d;
+  color: black;
+  transition: all 0.1s ease-in-out;
+}
+.number{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button2{
+  background-color: #ff6088;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 30px;
+  padding: 5px 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+  color: white;
 }
 </style>
