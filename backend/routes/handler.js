@@ -16,9 +16,6 @@ router.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content - Type, Accept");
     next();
 });
-
-
-
 router.get('/',  (req, res) => {
     res.end('This is my root API http response');
 });
@@ -58,6 +55,9 @@ router.get('/prods', async (req, res) => {
 
 );
 
+
+
+/*
 router.post('/prods', async (req, res) => {
     try {
         console.log(req.body);
@@ -114,7 +114,7 @@ router.delete('/prods/:id', async (req, res) => {
 
 );
 
-
+*/
 router.post('/login', async (req, res) => {
     const { name, password } = req.body;
     const customers = Schemas.customers;
@@ -316,21 +316,5 @@ router.get('/orders/:id', async (req, res) => {
 
 );
 
-
-
-router.get('/cust', (req, res) => {
-    const responseObject = {
-        message: 'This is a JSON response',
-        data: {
-            items: [
-                { id: 1, name: 'Customer 1' },
-                { id: 2, name: 'Customer 2' },
-                { id: 3, name: 'Customer 3' },
-            ],
-        },
-    };
-
-    res.json(responseObject);
-});
 
 module.exports = router; 
